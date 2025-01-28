@@ -8,14 +8,17 @@ import java.io.IOException;
 import java.net.URI;
 
 public class Main {
+    public static final String BASE_URI = "http://0.0.0.0:8080/";
 
-    public static void main(String[] args) throws IOException {
-        HealthResource healthResource = new HealthResource();
-        ResourceConfig resourceConfig = new ResourceConfig()
-                .register(healthResource);
-        URI uri = URI.create("http://localhost:8080/");
+    public static void startServer() {
+        final ResourceConfig rc = new ResourceConfig()
+                .register(new ProductsRessource())
+                .register(new HealthResource());
+        GrizzlyHttpServerFactory.createHttpServer(URI.create(BASE_URI), rc);
+    }
 
-        HttpServer server = GrizzlyHttpServerFactory.createHttpServer(uri, resourceConfig);
-        server.start();
+    public static void main(String[] args) {
+        startServer();
+        System.out.printf("Jersey app started with endpoints available at %s%n", BASE_URI);
     }
 }
